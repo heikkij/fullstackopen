@@ -1,0 +1,18 @@
+kayttaja->selain:
+note left of selain
+sivulle fullstack-exampleapp.herokuapp.com/spa
+kayttaja kirjoittaa muistiinpanon ja painaa Talleta painiketta
+end note
+
+selain->kayttaja:
+note right of kayttaja
+ selain liittää uuden muistiinpanon osaksi sivua ja käyttäjä näkee päivitetyn listan
+ (listalle ei päivity muut palvelimelle tehdyt listan muokkaukset)
+end note
+
+selain->palvelin: POST fullstack-exampleapp.herokuapp.com/new_note_spa
+note left of palvelin
+  tallennetaan lähetetty muistiinpano palvelimella
+end note
+palvelin->selain: status 201
+

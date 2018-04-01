@@ -1,0 +1,26 @@
+kayttaja->selain:
+note left of selain
+kayttaja kirjoittaa/valitsee linkin
+fullstack-exampleapp.herokuapp.com/spa
+end note
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/spa
+note left of palvelin
+  muodostetaan HTML lomake missä mahdollisuus tallentaa
+  uusi muistiinpano
+end note
+palvelin->selain: status 200, sivun HTML-koodi
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.css
+palvelin->selain: status 200, sivun css koodi 
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/spa.js
+palvelin->selain: status 200, sivun javascript koodi
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/data.json
+palvelin->selain: status 200, olemassaolevat muistiinpanot json-muodossa  
+
+note left of selain
+ selain näyttää palvelimen palauttaman HTML:n ja liittää olemassa olevat
+ muistiinpanot osaksi sivua javascriptin avulla. lisäksi selain muotoileee
+ sivun saamansa stylesheet määrityksen mukaisesti
+end note
