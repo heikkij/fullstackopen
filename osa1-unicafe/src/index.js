@@ -71,9 +71,9 @@ class App extends React.Component {
 
     setVote = (type) => {
         return () => {
-            const currentState = this.state
-            currentState[type] = currentState[type] + 1
-            this.setState(currentState)
+            this.setState({
+                [type]: this.state[type] + 1,
+            })
         }
     }
 
