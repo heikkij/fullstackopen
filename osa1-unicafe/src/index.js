@@ -15,9 +15,39 @@ const Button = ({ handleClick, text }) => {
     )
 }
 
-const Counter = ({title, number, unit}) => {
+const Statistic = ({title, number, unit}) => {
     return (
         <div>{title} {number} {unit}</div>
+    )
+}
+
+const Statistics = ({state}) => {
+    const getFeedbacks = (state) => state.good + state.neutral + state.bad
+
+    const getAverage = (state) => {
+        if (getFeedbacks(state) > 0) {
+            return ((state.good - state.bad) / getFeedbacks(state)).toFixed(1)
+        } else {
+            return 0
+        }
+    }
+
+    const getGoodPercentage = (state) => {
+        if (getFeedbacks(state) > 0) {
+            return (state.good / getFeedbacks(state) * 100).toFixed(1)
+        } else {
+            return 0
+        }
+    }
+
+    return (
+        <div>
+            <Statistic title={'Hyvä'} number={state.good} />
+            <Statistic title={'Neutraali'} number={state.neutral} />
+            <Statistic title={'Huono'} number={state.bad} />
+            <Statistic title={'Keskiarvo'} number={getAverage(state)} />
+            <Statistic title={'Positiivisia'} number={getGoodPercentage(state)} unit={'%'} />
+        </div>
     )
 }
 
@@ -28,22 +58,6 @@ class App extends React.Component {
             good: 0,
             neutral: 0,
             bad: 0,
-        }
-    }
-
-    getAverage = (state) => {
-        if (state.good + state.neutral + state.bad > 0) {
-            return ((state.good - state.bad) / (state.good + state.neutral + state.bad)).toFixed(1)
-        } else {
-            return 0
-        }
-    }
-
-    getGoodPercentage = (state) => {
-        if (state.good + state.neutral + state.bad > 0) {
-            return (state.good / (state.good + state.neutral + state.bad) * 100).toFixed(1)
-        } else {
-            return 0
         }
     }
 
@@ -79,11 +93,7 @@ class App extends React.Component {
             <Button text={'Neutraali'} handleClick={this.setNeutral(this.state.neutral + 1)} />
             <Button text={'Huono'} handleClick={this.setBad(this.state.bad + 1)} />
             <Header text={'Statistiikka'} />
-            <Counter title={'Hyvä'} number={this.state.good} />
-            <Counter title={'Neutraali'} number={this.state.neutral} />
-            <Counter title={'Huono'} number={this.state.bad} />
-            <Counter title={'Keskiarvo'} number={this.getAverage(this.state)} />
-            <Counter title={'Positiivisia'} number={this.getGoodPercentage(this.state)} unit={'%'} />
+            <Statistics state={this.state} />
         </div>
         )
     }
