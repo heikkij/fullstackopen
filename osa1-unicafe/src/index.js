@@ -40,6 +40,14 @@ const Statistics = ({state}) => {
         }
     }
 
+    if (getFeedbacks(state) === 0) {
+        return (
+            <div>
+                <em>Palautteita ei ole annettu</em>
+            </div>
+        )
+    }
+
     return (
         <div>
             <Statistic title={'Hyvä'} number={state.good} />
