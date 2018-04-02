@@ -17,7 +17,7 @@ const Button = ({ handleClick, text }) => {
 
 const Statistic = ({title, number, unit}) => {
     return (
-        <div>{title} {number} {unit}</div>
+        <tr><td>{title}</td><td>{number}</td><td>{unit}</td></tr>
     )
 }
 
@@ -49,13 +49,15 @@ const Statistics = ({state}) => {
     }
 
     return (
-        <div>
+        <table>
+            <tbody>
             <Statistic title={'Hyvä'} number={state.good} />
             <Statistic title={'Neutraali'} number={state.neutral} />
             <Statistic title={'Huono'} number={state.bad} />
             <Statistic title={'Keskiarvo'} number={getAverage(state)} />
             <Statistic title={'Positiivisia'} number={getGoodPercentage(state)} unit={'%'} />
-        </div>
+            </tbody>
+        </table>
     )
 }
 
