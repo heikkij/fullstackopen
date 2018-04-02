@@ -15,9 +15,9 @@ const Button = ({ handleClick, text }) => {
     )
 }
 
-const Counter = ({title, number}) => {
+const Counter = ({title, number, unit}) => {
     return (
-        <div>{title} {number}</div>
+        <div>{title} {number} {unit}</div>
     )
 }
 
@@ -28,6 +28,22 @@ class App extends React.Component {
             good: 0,
             neutral: 0,
             bad: 0,
+        }
+    }
+
+    getAverage = (state) => {
+        if (state.good + state.neutral + state.bad > 0) {
+            return ((state.good - state.bad) / (state.good + state.neutral + state.bad)).toFixed(1)
+        } else {
+            return 0
+        }
+    }
+
+    getGoodPercentage = (state) => {
+        if (state.good + state.neutral + state.bad > 0) {
+            return (state.good / (state.good + state.neutral + state.bad) * 100).toFixed(1)
+        } else {
+            return 0
         }
     }
 
@@ -66,6 +82,8 @@ class App extends React.Component {
             <Counter title={'Hyvä'} number={this.state.good} />
             <Counter title={'Neutraali'} number={this.state.neutral} />
             <Counter title={'Huono'} number={this.state.bad} />
+            <Counter title={'Keskiarvo'} number={this.getAverage(this.state)} />
+            <Counter title={'Positiivisia'} number={this.getGoodPercentage(this.state)} unit={'%'} />
         </div>
         )
     }
