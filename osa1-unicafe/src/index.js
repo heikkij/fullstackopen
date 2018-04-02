@@ -69,27 +69,11 @@ class App extends React.Component {
         }
     }
 
-    setGood = (value) => {
+    setVote = (type) => {
         return () => {
-            this.setState({
-                good: value,
-            })
-        }
-    }
-
-    setNeutral = (value) => {
-        return () => {
-            this.setState({
-                neutral: value,
-            })
-        }
-    }
-
-    setBad = (value) => {
-        return () => {
-            this.setState({
-                bad: value,
-            })
+            const currentState = this.state
+            currentState[type] = currentState[type] + 1
+            this.setState(currentState)
         }
     }
 
@@ -97,9 +81,9 @@ class App extends React.Component {
         return (
             <div>
             <Header text={'Anna palautetta'} />
-            <Button text={'Hyvä'} handleClick={this.setGood(this.state.good + 1)}/>
-            <Button text={'Neutraali'} handleClick={this.setNeutral(this.state.neutral + 1)} />
-            <Button text={'Huono'} handleClick={this.setBad(this.state.bad + 1)} />
+            <Button text={'Hyvä'} handleClick={this.setVote('good')}/>
+            <Button text={'Neutraali'} handleClick={this.setVote('neutral')} />
+            <Button text={'Huono'} handleClick={this.setVote('bad')} />
             <Header text={'Statistiikka'} />
             <Statistics state={this.state} />
         </div>
