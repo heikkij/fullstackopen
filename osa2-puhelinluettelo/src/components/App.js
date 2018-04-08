@@ -11,13 +11,14 @@ class App extends React.Component {
         super(props)
         this.state = {
             persons: [
-                {
-                    name: 'Arto Hellas',
-                    number: '0404324321'
-                }
+                { name: 'Arto Hellas', number: '040-123456' },
+                { name: 'Martti Tienari', number: '040-123456' },
+                { name: 'Arto Järvinen', number: '040-123456' },
+                { name: 'Lea Kutvonen', number: '040-123456' },
             ],
             newName: '',
             newNumber: '',
+            nameFilter: '',
         }
     }
 
@@ -28,13 +29,10 @@ class App extends React.Component {
             name: this.state.newName,
             number: this.state.newNumber,
         }
-        const persons = this.state.persons.concat(newPerson)
-        const newName = ''
-        const newNumber = ''
         this.setState({
-            persons,
-            newName,
-            newNumber,
+            persons: this.state.persons.concat(newPerson),
+            newName: '',
+            newNumber: '',
         })
     }
 
@@ -50,10 +48,21 @@ class App extends React.Component {
         })
     }
 
+    handleNameFilter = (event) => {
+        this.setState({
+            nameFilter: event.target.value
+        })
+    }
+
     render() {
+        const searchRegExp = new RegExp(this.state.nameFilter, 'i')
+        const personsToShow = this.state.nameFilter.length === 0 ? 
+            this.state.persons : this.state.persons.filter(person => person.name.search(searchRegExp) > -1)
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
+                rajaa näytettäviä: <input value={this.state.nameFilter} onChange={this.handleNameFilter} />
+                <h2>Lisää uusi</h2>
                 <form onSubmit={this.addPerson}>
                     <table>
                         <tbody>
@@ -68,7 +77,7 @@ class App extends React.Component {
                 <h2>Numerot</h2>
                 <table>
                     <tbody>
-                        {this.state.persons.map(person => <Person key={person.name} person={person} />)}
+                        {personsToShow.map(person => <Person key={person.name} person={person} />)}
                     </tbody>
                 </table>
             </div>
