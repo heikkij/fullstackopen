@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios'
 
 const Input = (props) => {
     return (
@@ -42,17 +43,20 @@ class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            persons: [
-                { name: 'Arto Hellas', number: '040-123456' },
-                { name: 'Martti Tienari', number: '040-123456' },
-                { name: 'Arto Järvinen', number: '040-123456' },
-                { name: 'Lea Kutvonen', number: '040-123456' },
-            ],
+            persons: [],
             newName: '',
             newNumber: '',
             nameFilter: '',
         }
     }
+
+    componentDidMount() {
+        axios
+          .get('http://localhost:3001/persons')
+          .then(response => {
+            this.setState({ persons: response.data })
+          })
+    }    
 
     addPerson = (event) => {
         event.preventDefault()
