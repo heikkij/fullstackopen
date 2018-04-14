@@ -1,22 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-const CountryList = ({ countries }) => {
-    return (
-        <table>
-            <tbody>
-                {countries.map(country => <Country key={country.alpha3Code} country={country} />)}
-            </tbody>
-        </table>
-    )
-}
-
-const Country = ({ country }) => {
-    return (
-        <tr><td>{country.name}</td></tr>
-    )
-}
-
 const CountryDetails = ({ country }) => {
     return (
         <div>
@@ -28,14 +12,30 @@ const CountryDetails = ({ country }) => {
     )
 }
 
-const Countries = ({ countries }) => {
+const CountryListItem = ({ country, onClick }) => {
+    return (
+        <tr onClick={onClick}><td id={country.name}>{country.name}</td></tr>
+    )
+}
+
+const CountryList = ({ countries, onClick }) => {
+    return (
+        <table>
+            <tbody>
+                {countries.map(country => <CountryListItem key={country.alpha3Code} country={country} onClick={onClick} />)}
+            </tbody>
+        </table>
+    )
+}
+
+const Countries = ({ countries, onClick }) => {
     if (countries.length > 10) {
         return (
             <div>too many matches, specify another filter</div>
         )
     } else if (countries.length > 1) {
         return (
-            <CountryList countries={countries} />
+            <CountryList countries={countries} onClick={onClick} />
         )
     } else if (countries.length === 1) {
         return (
@@ -66,8 +66,16 @@ class App extends React.Component {
     }
 
     handleCountryFilter = (event) => {
+        const { target: { value } } = event
         this.setState({
-            countryFilter: event.target.value
+            countryFilter: value
+        })
+    }
+
+    setCountryFilter = (event) => {
+        const { target: { id } } = event
+        this.setState({
+            countryFilter: id
         })
     }
 
@@ -76,7 +84,7 @@ class App extends React.Component {
         return (
             <div>
                 find countries: <input value={this.state.countryFilter} onChange={this.handleCountryFilter} />
-                <Countries countries={filteredCountries} />
+                <Countries countries={filteredCountries} onClick={this.setCountryFilter} />
             </div>
         )
     }
