@@ -1,6 +1,15 @@
 import React from 'react';
 import personService from '../services/persons'
 
+const Notification = ({ message }) => {
+    if (message === null) return null
+    return (
+      <div className="message">
+        {message}
+      </div>
+    )
+}
+
 const NewPerson = ({newPersonName, newPersonNumber, onNameChange, onNumberChange}) => {
     return (
         <div>
@@ -46,6 +55,7 @@ class App extends React.Component {
             newPersonName: '',
             newPersonNumber: '',
             nameFilter: '',
+            message: null,
         }
     }
 
@@ -66,6 +76,7 @@ class App extends React.Component {
                         persons: this.state.persons.map((person) => person.id === newPerson.id ? response.data : person),
                         newPersonName: '',
                         newPersonNumber: '',
+                        message: `päivitetty ${newPerson.name}`,
                     })
                 })
             }
@@ -79,9 +90,11 @@ class App extends React.Component {
                     persons: this.state.persons.concat(response.data),
                     newPersonName: '',
                     newPersonNumber: '',
+                    message: `lisätty ${newPerson.name}`,
                 })
             })
         }
+        setTimeout(() => this.setState({message: null}), 5000)
     }
 
     deletePerson = (event) => {
@@ -89,8 +102,10 @@ class App extends React.Component {
         personService.deleteOne(id).then(response => {
             this.setState({
                 persons: this.state.persons.filter((person) => person.id.toString() !== id.toString()),
+                message: `poistettu ${id}`,
             })
         })
+        setTimeout(() => this.setState({message: null}), 5000)
     }
 
     handleNewName = (event) => {
@@ -116,6 +131,7 @@ class App extends React.Component {
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
+                <Notification message={this.state.message}/>
                 rajaa näytettäviä: <input value={this.state.nameFilter} onChange={this.handleNameFilter} />
                 <h2>Lisää uusi</h2>
                 <form onSubmit={this.addPerson}>
