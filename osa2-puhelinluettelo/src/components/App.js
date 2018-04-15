@@ -51,11 +51,9 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        axios
-          .get('http://localhost:3001/persons')
-          .then(response => {
+        axios.get('http://localhost:3001/persons').then(response => {
             this.setState({ persons: response.data })
-          })
+        })
     }    
 
     addPerson = (event) => {
@@ -65,10 +63,12 @@ class App extends React.Component {
             name: this.state.newName,
             number: this.state.newNumber,
         }
-        this.setState({
-            persons: this.state.persons.concat(newPerson),
-            newName: '',
-            newNumber: '',
+        axios.post('http://localhost:3001/persons', newPerson).then(response => {
+            this.setState({
+                persons: this.state.persons.concat(response.data),
+                newName: '',
+                newNumber: '',
+            })
         })
     }
 
