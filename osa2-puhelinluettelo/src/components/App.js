@@ -1,19 +1,13 @@
 import React from 'react';
 import personService from '../services/persons'
 
-const Input = (props) => {
-    return (
-        <input value={props.value} onChange={props.onChange} />
-    )
-}
-
-const NewPerson = (props) => {
+const NewPerson = ({newPersonName, newPersonNumber, onNameChange, onNumberChange}) => {
     return (
         <div>
             <table>
                 <tbody>
-                    <tr><td>nimi:</td><td><Input value={props.newName} onChange={props.onNameChange} /></td></tr>
-                    <tr><td>numero:</td><td><Input value={props.newNumber} onChange={props.onNumberChange} /></td></tr>
+                    <tr><td>nimi:</td><td><input value={newPersonName} onChange={onNameChange} /></td></tr>
+                    <tr><td>numero:</td><td><input value={newPersonNumber} onChange={onNumberChange} /></td></tr>
                 </tbody>
             </table>
             <div>
@@ -49,8 +43,8 @@ class App extends React.Component {
         super(props)
         this.state = {
             persons: [],
-            newName: '',
-            newNumber: '',
+            newPersonName: '',
+            newPersonNumber: '',
             nameFilter: '',
         }
     }
@@ -63,18 +57,31 @@ class App extends React.Component {
 
     addPerson = (event) => {
         event.preventDefault()
-        if (this.state.persons.find(person => person.name === this.state.newName)) return
-        const newPerson = {
-            name: this.state.newName,
-            number: this.state.newNumber,
-        }
-        personService.create(newPerson).then(response => {
-            this.setState({
-                persons: this.state.persons.concat(response.data),
-                newName: '',
-                newNumber: '',
+        const person = this.state.persons.find(person => person.name === this.state.newPersonName)
+        if (person) {
+            if (window.confirm(`${person.name} on jo luettelossa, korvataanko vanha numero uudella?`)) {
+                const newPerson = {...person, number: this.state.newPersonNumber}
+                personService.updateOne(newPerson.id, newPerson).then(response => {
+                    this.setState({
+                        persons: this.state.persons.map((person) => person.id === newPerson.id ? response.data : person),
+                        newPersonName: '',
+                        newPersonNumber: '',
+                    })
+                })
+            }
+        } else {
+            const newPerson = {
+                name: this.state.newPersonName,
+                number: this.state.newPersonNumber,
+            }
+            personService.create(newPerson).then(response => {
+                this.setState({
+                    persons: this.state.persons.concat(response.data),
+                    newPersonName: '',
+                    newPersonNumber: '',
+                })
             })
-        })
+        }
     }
 
     deletePerson = (event) => {
@@ -88,13 +95,13 @@ class App extends React.Component {
 
     handleNewName = (event) => {
         this.setState({
-            newName: event.target.value,
+            newPersonName: event.target.value,
         })
     }
 
     handleNewNumber = (event) => {
         this.setState({
-            newNumber: event.target.value,
+            newPersonNumber: event.target.value,
         })
     }
 
@@ -109,11 +116,10 @@ class App extends React.Component {
         return (
             <div>
                 <h2>Puhelinluettelo</h2>
-                rajaa näytettäviä: <Input value={this.state.nameFilter} onChange={this.handleNameFilter} />
+                rajaa näytettäviä: <input value={this.state.nameFilter} onChange={this.handleNameFilter} />
                 <h2>Lisää uusi</h2>
                 <form onSubmit={this.addPerson}>
-                    <NewPerson newName={this.state.newName} newNumber={this.state.newNumber}
-                        onNameChange={this.handleNewName} onNumberChange={this.handleNewNumber} />
+                    <NewPerson newPersonName={this.state.newPersonName} newPersonNumber={this.state.newPersonNumber} onNameChange={this.handleNewName} onNumberChange={this.handleNewNumber} />
                 </form>
                 <h2>Numerot</h2>
                 <Persons persons={personsToShow} onDelete={this.deletePerson} />
