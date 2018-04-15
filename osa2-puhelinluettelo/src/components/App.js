@@ -23,17 +23,22 @@ const NewPerson = (props) => {
     )
 }
 
-const Person = ({ person }) => {
+const Person = ({ person, onDelete }) => {
+    const deleteWithConfirm = (event) => {
+        if (window.confirm(`poistetaanko ${person.name}`)) {
+            onDelete(event)
+        }
+    }
     return (
-        <tr><td>{person.name}</td><td>{person.number}</td></tr>
+        <tr><td>{person.name}</td><td>{person.number}</td><td><button id={person.id} onClick={deleteWithConfirm}>poista</button></td></tr>
     )
 }
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, onDelete }) => {
     return (
         <table>
             <tbody>
-                {persons.map(person => <Person key={person.name} person={person} />)}
+                {persons.map(person => <Person key={person.name} person={person} onDelete={onDelete} />)}
             </tbody>
         </table>
     )
@@ -72,6 +77,15 @@ class App extends React.Component {
         })
     }
 
+    deletePerson = (event) => {
+        const { target: { id } } = event
+        personService.deleteOne(id).then(response => {
+            this.setState({
+                persons: this.state.persons.filter((person) => person.id.toString() !== id.toString()),
+            })
+        })
+    }
+
     handleNewName = (event) => {
         this.setState({
             newName: event.target.value,
@@ -102,7 +116,7 @@ class App extends React.Component {
                         onNameChange={this.handleNewName} onNumberChange={this.handleNewNumber} />
                 </form>
                 <h2>Numerot</h2>
-                <Persons persons={personsToShow} />
+                <Persons persons={personsToShow} onDelete={this.deletePerson} />
             </div>
         )
     }
