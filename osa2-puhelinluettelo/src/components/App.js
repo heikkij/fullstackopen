@@ -69,14 +69,19 @@ class App extends React.Component {
         event.preventDefault()
         const person = this.state.persons.find(person => person.name === this.state.newPersonName)
         if (person) {
-            if (window.confirm(`${person.name} on jo luettelossa, korvataanko vanha numero uudella?`)) {
-                const newPerson = {...person, number: this.state.newPersonNumber}
+            const newPerson = {...person, number: this.state.newPersonNumber}
+            if (window.confirm(`${newPerson.name} on jo luettelossa, korvataanko vanha numero uudella?`)) {
                 personService.updateOne(newPerson.id, newPerson).then(response => {
                     this.setState({
                         persons: this.state.persons.map((person) => person.id === newPerson.id ? response.data : person),
                         newPersonName: '',
                         newPersonNumber: '',
                         message: `päivitetty ${newPerson.name}`,
+                    })
+                }).catch(error => {
+                    this.setState({
+                        persons: this.state.persons.filter((person) => person.id !== newPerson.id),
+                        message: `${newPerson.name} on poistettu`,
                     })
                 })
             }
