@@ -105,9 +105,10 @@ class App extends React.Component {
     deletePerson = (event) => {
         const { target: { id } } = event
         personService.deleteOne(id).then(response => {
+            const removed = this.state.persons.find(person => person.id === id)
             this.setState({
-                persons: this.state.persons.filter((person) => person.id.toString() !== id.toString()),
-                message: `poistettu ${id}`,
+                persons: this.state.persons.filter((person) => person.id !== id),
+                message: `poistettu ${removed.name}`,
             })
         })
         setTimeout(() => this.setState({message: null}), 5000)
