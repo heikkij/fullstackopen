@@ -62,6 +62,8 @@ class App extends React.Component {
     componentDidMount() {
         personService.getAll().then(response => {
             this.setState({ persons: response.data })
+        }).catch(error => {
+            console.error(error)
         })
     }    
 
@@ -97,6 +99,8 @@ class App extends React.Component {
                     newPersonNumber: '',
                     message: `lisätty ${newPerson.name}`,
                 })
+            }).catch(error => {
+                console.error(error)
             })
         }
         setTimeout(() => this.setState({message: null}), 5000)
@@ -110,6 +114,8 @@ class App extends React.Component {
                 persons: this.state.persons.filter((person) => person.id !== id),
                 message: `poistettu ${removed.name}`,
             })
+        }).catch(error => {
+            console.error(error)
         })
         setTimeout(() => this.setState({message: null}), 5000)
     }
